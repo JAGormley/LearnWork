@@ -1,34 +1,33 @@
-//import common._
+import common._
+import forcomp.Anagrams.Word
+import forcomp.Anagrams.dictionary
+import forcomp.Anagrams.Sentence
+import forcomp.Anagrams.Occurrences
+object Tester2 {
 
-object tester {
+  def wordOccurrencesTest(w: Word): Occurrences = {
+    val temp = w.toList.groupBy((element: Char) => element)
+    val temp2 = temp map {case (key, value) => (key, value.length)} toList
 
-  def squareList(xs: List[Int]): List[Int] = xs match {
-    case Nil => xs
-    case y :: ys => y * y :: squareList(ys);
+    temp2 sortBy(x => (x._1))
   }
 
-  def squareList2(xs: List[Int]): List[Int] =
-    xs map (x => x*x)
-
-  def pack[T](xs: List[T]): List[List[T]] = xs match {
-    case Nil      => Nil
-    case x :: xs1 =>
-      val (first, rest) = xs span(y => y == x)
-      first :: pack(rest)
+  def sentenceOccurrencesTest(s: Sentence): Occurrences = {
+    wordOccurrencesTest(s.mkString)
   }
 
-  def encode[T](xs: List[T]): List[(T, Int)] =
-    pack(xs) map (x => (x.head, x.length))
+  lazy val dictionaryByOccurrencesTest: Map[Occurrences, List[Word]] = {
+    dictionary.groupBy((element: Word) => wordOccurrencesTest(element))
+  }
 
-  def mapFun[T, U](xs: List[T], f: T => U): List[U] =
-    (xs foldRight List[U]())(f(_) :: _)
+  def wordAnagrams(word: Word): List[Word] = {
+    dictionaryByOccurrencesTest(wordOccurrencesTest(word))
+  }
 
-  def lengthFun[T](xs: List[T]): Int =
-    (xs foldRight 0)( ??? )
+  wordAnagrams("ramp")
 
-  squareList(List(2, 4, 2))
-  squareList2(List(2, 4, 2))
-  pack(List("a", "a", "a", "b", "c", "c", "a"))
-  encode(List("a", "a", "a", "b", "c", "c", "a"))
+  sentenceOccurrencesTest(List("ddgfdgad", "esdfsdeds", "xcxmvkj"))
+
+
 }
 
